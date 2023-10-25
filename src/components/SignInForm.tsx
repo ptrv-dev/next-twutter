@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -31,11 +33,23 @@ const SignInForm = () => {
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
   });
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async (data: FormSchema) => {
     if (loading) return;
     setLoading(true);
+
+    const result = await signIn('credentials', {
+      username: data.username,
+      password: data.password,
+      redirect: false,
+    });
+
+    if (result?.ok) router.push('/');
+    else form.setError('password', { message: 'Invalid username or password' });
+
+    setLoading(false);
   };
 
   return (
