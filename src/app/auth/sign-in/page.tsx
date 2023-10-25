@@ -1,4 +1,5 @@
 import { getServerSession } from 'next-auth';
+import Link from 'next/link';
 
 import { authOptions } from '@/app/api/auth/[...nextauth]/options';
 import SignInForm from '@/components/SignInForm';
@@ -17,6 +18,12 @@ const SignInPage = async () => {
           </p>
         </div>
         <SignInForm />
+        <div className="mt-8 text-center text-muted-foreground">
+          Don&apos;t have an account yet?{' '}
+          <Link className="text-primary hover:underline" href="/auth/sign-up">
+            Sign Up
+          </Link>
+        </div>
       </div>
     </div>
   );

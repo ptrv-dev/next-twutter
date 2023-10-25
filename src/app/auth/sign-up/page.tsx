@@ -1,5 +1,6 @@
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
+import Link from 'next/link';
 
 import { authOptions } from '@/app/api/auth/[...nextauth]/options';
 import SignUpForm from '@/components/SignUpForm';
@@ -17,6 +18,12 @@ const SignUpPage = async () => {
           </p>
         </div>
         <SignUpForm />
+        <div className="mt-8 text-center text-muted-foreground">
+          Already have an account?{' '}
+          <Link className="text-primary hover:underline" href="/auth/sign-in">
+            Sign In
+          </Link>
+        </div>
       </div>
     </div>
   );
