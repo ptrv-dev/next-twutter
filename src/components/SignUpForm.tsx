@@ -4,6 +4,9 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+import axios, { AxiosError } from 'axios';
+import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 import {
   Form,
@@ -14,6 +17,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { toast } from './ui/use-toast';
 
 const formSchema = z.object({
   username: z
@@ -35,6 +39,7 @@ const SignUpForm = () => {
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
   });
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async (data: FormSchema) => {
@@ -44,6 +49,44 @@ const SignUpForm = () => {
         message: 'Passwords do not match',
       });
     setLoading(true);
+
+    try {
+      await axios.post('/api/auth/sign-up', {
+        username: data.username,
+        email: data.email,
+        password: data.password,
+      });
+      const res = await signIn('credentials', {
+        username: data.username,
+        password: data.password,
+      });
+      console.log(res);
+      if (res?.ok) {
+        router.push('/');
+      } else {
+        toast({ title: 'Something went wrong!', variant: 'destructive' });
+      }
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        if (error.response?.status === 409) {
+          const message = error.response.data.message;
+          if (message && message.toLowerCase().includes('username')) {
+            return form.setError('username', {
+              message: 'Username is already taken',
+            });
+          } else if (message && message.toLowerCase().includes('email')) {
+            return form.setError('email', {
+              message: 'Email is already taken',
+            });
+          }
+        }
+      } else {
+        console.error(error);
+        alert('Something went wrong...');
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
