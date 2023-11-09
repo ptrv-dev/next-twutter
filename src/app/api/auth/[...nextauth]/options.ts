@@ -1,10 +1,7 @@
 import { AuthOptions } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
-
-const VALID_USER = {
-  username: 'root',
-  password: 'qwerty',
-};
+import * as bcrypt from 'bcrypt';
+import { prisma } from '@/app/prisma';
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -16,17 +13,27 @@ export const authOptions: AuthOptions = {
         password: {},
       },
       async authorize(credentials) {
-        if (
-          credentials?.username === VALID_USER.username &&
-          credentials?.password === VALID_USER.password
-        ) {
-          return {
-            id: '1',
-            name: VALID_USER.username,
-          };
+        const user = await prisma.user.findUnique({
+          where: { username: credentials?.username },
+        });
+        if (!user) {
+          throw new Error('Incorrect username or password');
         }
 
-        throw new Error('Invalid username or password');
+        const isPasswordValid = await bcrypt.compare(
+          credentials?.password || '',
+          user.password
+        );
+        if (!isPasswordValid) {
+          throw new Error('Incorrect username or password');
+        }
+
+        return {
+          id: user.id.toString(),
+          name: user.username,
+          email: user.email,
+          image: user.avatar,
+        };
       },
     }),
   ],
