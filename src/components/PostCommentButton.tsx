@@ -8,10 +8,11 @@ import { useSession } from 'next-auth/react';
 import WriteComment from './WriteComment';
 
 interface Props {
+  postId: number;
   comments: IComment[];
 }
 
-const PostCommentButton: FC<Props> = ({ comments }) => {
+const PostCommentButton: FC<Props> = ({ postId, comments }) => {
   const [open, setOpen] = useState<boolean>(false);
   const session = useSession();
 
@@ -44,7 +45,7 @@ const PostCommentButton: FC<Props> = ({ comments }) => {
                 />
               ))}
               {session.status === 'authenticated' && (
-                <WriteComment className="mt-8" />
+                <WriteComment postId={postId} className="mt-8" />
               )}
             </div>
           </div>
