@@ -18,18 +18,22 @@ const InfinitePosts: FC<Props> = ({ limit }) => {
   const [hasMore, setHasMore] = useState<boolean>(true);
   const observableRef = useRef<HTMLDivElement>(null);
 
-  const fetchPosts = async () => {
+  const fetchPosts = async (limit: number, skip: number, clear = false) => {
     if (loading) return;
     try {
       setLoading(true);
 
       const { data } = await axios.get<IGetPosts>(
-        '/api/post?skip=' + limit * times
+        '/api/post?skip=' + skip + '&limit=' + limit
       );
 
-      setPosts((prev) => [...prev, ...data.data]);
-      setTimes((prev) => prev + 1);
-      setHasMore(data.count > limit * times);
+      if (clear) {
+        setPosts(data.data);
+      } else {
+        setPosts((prev) => [...prev, ...data.data]);
+        setTimes((prev) => prev + 1);
+        setHasMore(data.count > limit * times);
+      }
     } catch (error) {
       console.error(error);
       toast({
@@ -42,12 +46,18 @@ const InfinitePosts: FC<Props> = ({ limit }) => {
     }
   };
 
+  const onRemove = async () => {
+    await fetchPosts(posts.length, limit, true);
+  };
+
+  console.log({ posts, times, hasMore });
+
   useEffect(() => {
     if (!observableRef.current) return;
 
     const observer = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting) {
-        fetchPosts();
+        fetchPosts(limit, limit * times);
         observer.unobserve(entry.target);
       }
     });
@@ -71,6 +81,7 @@ const InfinitePosts: FC<Props> = ({ limit }) => {
           text={post.text}
           likes={post.likes}
           comments={post.comments}
+          onRemove={onRemove}
           createdAt={new Date(post.createdAt)}
         />
       ))}

@@ -1,31 +1,57 @@
 'use client';
 
-import { MoreHorizontalIcon, Trash2Icon } from 'lucide-react';
+import { Loader2Icon, MoreHorizontalIcon, Trash2Icon } from 'lucide-react';
 import { useSession } from 'next-auth/react';
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
+import { toast } from './ui/use-toast';
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
 
 interface Props {
   postId: number;
   authorId: number;
+  onRemove?: () => void;
 }
 
-const PostControl: FC<Props> = ({ postId, authorId }) => {
+const PostControl: FC<Props> = ({ postId, authorId, onRemove }) => {
+  const [loading, setLoading] = useState<boolean>(false);
   const session = useSession();
+  const router = useRouter();
 
   const handleRemove = async () => {
-    console.log('REMOVE ' + postId);
+    try {
+      setLoading(true);
+
+      await axios.delete('/api/post/' + postId);
+
+      toast({ title: 'Success', description: 'Post removed' });
+      if (onRemove) onRemove();
+      else router.refresh();
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: 'Error',
+        description: "Can't remove post, please try again later..",
+        variant: 'destructive',
+      });
+    } finally {
+      setLoading(false);
+    }
   };
+
+  if (loading)
+    return <Loader2Icon size={20} className="text-primary animate-spin" />;
 
   if (session.status === 'authenticated' && session.data.user.id === authorId)
     return (
       <DropdownMenu>
-        <DropdownMenuTrigger>
+        <DropdownMenuTrigger asChild>
           <button className="flex items-center gap-2 text-primary p-2 rounded hover:bg-primary-foreground transition-colors">
             <MoreHorizontalIcon size={20} />
           </button>

@@ -18,6 +18,7 @@ interface Props {
   likes: number[];
   comments: IComment[];
   createdAt: Date;
+  onRemove?: () => void;
 }
 
 const Post: FC<Props> = ({
@@ -28,6 +29,7 @@ const Post: FC<Props> = ({
   likes,
   comments,
   createdAt,
+  onRemove,
 }) => {
   return (
     <div className={cn('flex', className)}>
@@ -46,7 +48,7 @@ const Post: FC<Props> = ({
         <div className="mt-2 flex items-center gap-2">
           <PostLikeButton id={id} likes={likes} />
           <PostCommentButton postId={id} comments={comments} />
-          <PostControl postId={id} authorId={author.id} />
+          <PostControl postId={id} authorId={author.id} onRemove={onRemove} />
         </div>
       </div>
     </div>
