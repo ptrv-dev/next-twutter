@@ -6,6 +6,12 @@ export interface IGetPosts {
   count: number;
 }
 
+export interface IGetPost {
+  status: string;
+  code: number;
+  data: IPost;
+}
+
 export interface IPost {
   id: number;
   authorId: number;
