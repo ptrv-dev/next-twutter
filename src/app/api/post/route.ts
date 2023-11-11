@@ -4,14 +4,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import * as z from 'zod';
 import { authOptions } from '../auth/[...nextauth]/options';
 
-export const GET = async (req: NextRequest, res: Response) => {
+export const GET = async (req: NextRequest) => {
   try {
     const query = new URL(req.url).searchParams;
     const skip = Number(query.get('skip')) || 0;
     const limit = Number(query.get('limit')) || 10;
 
     const count = await prisma.post.count();
-
     const posts = await prisma.post.findMany({
       include: {
         author: { select: { id: true, username: true, avatar: true } },
@@ -61,17 +60,7 @@ export const POST = async (req: NextRequest, res: Response) => {
       );
 
     const json = await req.json();
-
-    const { success } = await postCreateSchema.safeParseAsync(json);
-    if (!success)
-      return NextResponse.json(
-        {
-          status: 'error',
-          code: 400,
-          message: 'Validation error',
-        },
-        { status: 400 }
-      );
+    postCreateSchema.parse(json);
 
     const post = await prisma.post.create({
       data: {
@@ -79,6 +68,7 @@ export const POST = async (req: NextRequest, res: Response) => {
         author: { connect: { id: session.user.id } },
       },
     });
+
     return NextResponse.json(
       {
         status: 'success',
@@ -91,6 +81,19 @@ export const POST = async (req: NextRequest, res: Response) => {
       }
     );
   } catch (error) {
+    if (error instanceof z.ZodError) {
+      const errors = error.errors.map((err) => err.message);
+      return NextResponse.json(
+        {
+          status: 'error',
+          code: 400,
+          message: 'Validation error',
+          errors,
+        },
+        { status: 400 }
+      );
+    }
+
     console.error('[ERROR:API] POST /api/post\n', error);
     return NextResponse.json(
       {
