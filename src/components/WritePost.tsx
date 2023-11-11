@@ -12,6 +12,7 @@ import { Textarea } from './ui/textarea';
 import { Form, FormField, FormItem, FormMessage } from './ui/form';
 import { toast } from './ui/use-toast';
 import { cn } from '@/lib/utils';
+import { useRouter } from 'next/navigation';
 
 const formSchema = z.object({
   text: z
@@ -30,6 +31,7 @@ const WritePost: FC<Props> = ({ className }) => {
     defaultValues: { text: '' },
     resolver: zodResolver(formSchema),
   });
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async (data: FormSchemaType) => {
@@ -45,6 +47,7 @@ const WritePost: FC<Props> = ({ className }) => {
         title: 'Post created',
       });
       form.reset();
+      router.refresh();
     } catch (error) {
       console.error(error);
       toast({
