@@ -1,19 +1,22 @@
 import { cn } from '@/lib/utils';
 import { FC } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
-import { HeartIcon, MessageCircleIcon } from 'lucide-react';
+import { MessageCircleIcon } from 'lucide-react';
+import PostLikeButton from './PostLikeButton';
 
 interface Props {
   className?: string;
+  id: number;
   author: {
     username: string;
     avatar?: string | null;
   };
   text: string;
+  likes: number[];
   createdAt: Date;
 }
 
-const Post: FC<Props> = ({ className, author, text, createdAt }) => {
+const Post: FC<Props> = ({ className, id, author, text, likes, createdAt }) => {
   return (
     <div className={cn('flex', className)}>
       <Avatar className="mr-4">
@@ -29,10 +32,7 @@ const Post: FC<Props> = ({ className, author, text, createdAt }) => {
         </div>
         <p className="whitespace-pre-wrap">{text}</p>
         <div className="mt-2 flex items-center gap-2">
-          <button className="flex items-center gap-2 text-primary p-2 rounded hover:bg-primary-foreground transition-colors">
-            <HeartIcon size={20} />
-            10
-          </button>
+          <PostLikeButton id={id} likes={likes} />
           <button className="flex items-center gap-2 text-primary p-2 rounded hover:bg-primary-foreground transition-colors">
             <MessageCircleIcon size={20} />4
           </button>
