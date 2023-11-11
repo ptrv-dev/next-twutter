@@ -43,7 +43,7 @@ const Post: FC<Props> = ({
         <p className="whitespace-pre-wrap">{text}</p>
         <div className="mt-2 flex items-center gap-2">
           <PostLikeButton id={id} likes={likes} />
-          <PostCommentButton comments={comments} />
+          <PostCommentButton postId={id} comments={comments} />
         </div>
       </div>
     </div>
