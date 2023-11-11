@@ -37,4 +37,12 @@ export const authOptions: AuthOptions = {
       },
     }),
   ],
+  callbacks: {
+    session({ session, user, token }) {
+      session.user = {
+        id: Number(token.sub),
+      };
+      return session;
+    },
+  },
 };
