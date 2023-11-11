@@ -7,7 +7,7 @@ interface Props {
   className?: string;
   author: {
     username: string;
-    avatar?: string;
+    avatar?: string | null;
   };
   text: string;
   createdAt: Date;
