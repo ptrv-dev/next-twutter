@@ -67,7 +67,7 @@ export const POST = async (req: NextRequest, res: Response) => {
     const post = await prisma.post.create({
       data: {
         text: json.text,
-        author: { connect: { email: session.user.email! } },
+        author: { connect: { id: session.user.id } },
       },
     });
     return NextResponse.json(
