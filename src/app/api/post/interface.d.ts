@@ -3,6 +3,7 @@ export interface IGetPosts {
   code: number;
   message: string;
   data: IPost[];
+  count: number;
 }
 
 export interface IPost {

@@ -6,11 +6,19 @@ import { authOptions } from '../auth/[...nextauth]/options';
 
 export const GET = async (req: NextRequest, res: Response) => {
   try {
+    const query = new URL(req.url).searchParams;
+    const skip = Number(query.get('skip')) || 0;
+    const limit = Number(query.get('limit')) || 10;
+
+    const count = await prisma.post.count();
+
     const posts = await prisma.post.findMany({
       include: {
         author: { select: { id: true, username: true, avatar: true } },
       },
       orderBy: { createdAt: 'desc' },
+      skip,
+      take: limit,
     });
     return NextResponse.json(
       {
@@ -18,6 +26,7 @@ export const GET = async (req: NextRequest, res: Response) => {
         code: 200,
         message: 'Posts retrieved',
         data: posts,
+        count,
       },
       { status: 200 }
     );
