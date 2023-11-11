@@ -1,10 +1,12 @@
 import { FC } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import CommentLikeButton from './CommentLikeButton';
+import CommentControl from './CommentControl';
 
 interface Props {
   id: number;
   author: {
+    id: number;
     avatar: string | null;
     username: string;
   };
@@ -28,8 +30,9 @@ const Comment: FC<Props> = ({ id, text, author, likes, createdAt }) => {
           </p>
         </div>
         <p className="whitespace-pre-line">{text}</p>
-        <div>
+        <div className="mt-2 flex items-center gap-2">
           <CommentLikeButton id={id} likes={likes} />
+          <CommentControl commentId={id} authorId={author.id} />
         </div>
       </div>
     </div>
