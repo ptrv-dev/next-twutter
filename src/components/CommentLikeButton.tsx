@@ -6,6 +6,7 @@ import { FC, useState } from 'react';
 import { toast } from './ui/use-toast';
 import axios from 'axios';
 import { cn } from '@/lib/utils';
+import { useRouter } from 'next/navigation';
 
 interface Props {
   id: number;
@@ -13,9 +14,9 @@ interface Props {
 }
 
 const CommentLikeButton: FC<Props> = ({ id, likes }) => {
-  const [localLikes, setLocalLikes] = useState<number[]>(likes);
   const [loading, setLoading] = useState<boolean>(false);
   const session = useSession();
+  const router = useRouter();
 
   const handleLike = async () => {
     if (session.status === 'loading') return;
@@ -25,6 +26,8 @@ const CommentLikeButton: FC<Props> = ({ id, likes }) => {
     setLoading(true);
 
     try {
+      await axios.post(`/api/comment/like/${id}`);
+      router.refresh();
     } catch (error) {
       console.error(error);
       toast({
@@ -48,11 +51,11 @@ const CommentLikeButton: FC<Props> = ({ id, likes }) => {
         <>
           <HeartIcon
             className={cn({
-              'fill-primary': localLikes.includes(session.data?.user.id || -1),
+              'fill-primary': likes.includes(session.data?.user.id || -1),
             })}
             size={20}
           />
-          {localLikes.length}
+          {likes.length}
         </>
       )}
     </button>
