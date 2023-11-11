@@ -7,7 +7,7 @@ export default function HomeLayout({
 }) {
   return (
     <div className="container min-h-screen flex">
-      <Navbar className="max-w-xs w-full" />
+      <Navbar className="max-w-[240px] w-full" />
       <main className="w-full">{children}</main>
     </div>
   );

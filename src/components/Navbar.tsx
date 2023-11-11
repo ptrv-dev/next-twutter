@@ -12,38 +12,40 @@ const navigationItems = [
   {
     label: 'Home',
     href: '/',
-    icon: <HomeIcon />,
+    icon: <HomeIcon size={18} />,
   },
   {
     label: 'Trend',
     href: '/trend',
-    icon: <StarsIcon />,
+    icon: <StarsIcon size={18} />,
   },
   {
     label: 'Search',
     href: '/search',
-    icon: <SearchIcon />,
+    icon: <SearchIcon size={18} />,
   },
   {
     label: 'Profile',
     href: '/profile',
-    icon: <UserIcon />,
+    icon: <UserIcon size={18} />,
   },
 ];
 
 const Navbar: FC<Props> = ({ className }) => {
   return (
     <aside className={cn('flex flex-col py-4 border-r', className)}>
-      <Link className="text-3xl font-bold text-primary self-start" href="/">
+      <Link
+        className="text-3xl font-bold text-primary self-start mb-4"
+        href="/"
+      >
         Twutter
       </Link>
-      <hr className="my-4" />
       <nav className="flex flex-col">
         {navigationItems.map((item) => (
           <Link
             key={item.label}
             href={item.href}
-            className="flex items-center py-2 gap-2 text-xl transition-colors hover:text-primary"
+            className="flex items-center py-2 gap-4 text-xl transition-colors hover:text-primary"
           >
             {item.icon}
             {item.label}

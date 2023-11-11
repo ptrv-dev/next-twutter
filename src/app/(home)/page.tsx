@@ -25,15 +25,16 @@ const HomePage = async () => {
   const posts = await getPosts(limit);
   return (
     <div className="border-r h-full">
-      <div className="border-b h-[69px] px-4 flex pb-4">
-        <h1 className="text-2xl mt-auto">Home</h1>
+      <div className="border-b p-4">
+        <h1 className="text-2xl">Home</h1>
       </div>
       {session && <WritePost className="p-4 border-b" />}
-      <div className="flex flex-col p-4 gap-4">
+      <div className="flex flex-col">
         {posts ? (
           <>
             {posts.map((post) => (
               <Post
+                className="border-b p-4"
                 key={post.id}
                 id={post.id}
                 author={post.author}

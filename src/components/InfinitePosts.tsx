@@ -64,6 +64,7 @@ const InfinitePosts: FC<Props> = ({ limit }) => {
     <>
       {posts.map((post) => (
         <Post
+          className="p-4 border-b"
           key={post.id}
           id={post.id}
           author={post.author}
