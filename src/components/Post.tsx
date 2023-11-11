@@ -4,11 +4,13 @@ import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import PostLikeButton from './PostLikeButton';
 import PostCommentButton from './PostCommentButton';
 import { IComment } from '@/app/api/post/interface';
+import PostControl from './PostControl';
 
 interface Props {
   className?: string;
   id: number;
   author: {
+    id: number;
     username: string;
     avatar?: string | null;
   };
@@ -44,6 +46,7 @@ const Post: FC<Props> = ({
         <div className="mt-2 flex items-center gap-2">
           <PostLikeButton id={id} likes={likes} />
           <PostCommentButton postId={id} comments={comments} />
+          <PostControl postId={id} authorId={author.id} />
         </div>
       </div>
     </div>

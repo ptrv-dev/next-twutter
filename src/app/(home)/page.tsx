@@ -36,11 +36,7 @@ const HomePage = async () => {
               <Post
                 className="border-b p-4"
                 key={post.id}
-                id={post.id}
-                author={post.author}
-                text={post.text}
-                likes={post.likes}
-                comments={post.comments}
+                {...post}
                 createdAt={new Date(post.createdAt)}
               />
             ))}
