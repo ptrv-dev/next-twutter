@@ -47,13 +47,12 @@ export const GET = async (req: NextRequest) => {
   }
 };
 
-export const postCreateSchema = z.object({
+const postCreateSchema = z.object({
   text: z
     .string({ required_error: 'Text is required' })
     .min(4, 'Text must be at least 4 characters long')
     .max(2048, 'Text must be at most 2048 characters long'),
 });
-export type postCreateType = z.infer<typeof postCreateSchema>;
 
 export const POST = async (req: NextRequest, res: Response) => {
   try {

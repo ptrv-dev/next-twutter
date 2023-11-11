@@ -1,11 +1,10 @@
 import { authOptions } from '@/app/api/auth/[...nextauth]/options';
 import { prisma } from '@/app/prisma';
-import { NextApiRequest } from 'next';
 import { getServerSession } from 'next-auth';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 export const POST = async (
-  req: NextApiRequest,
+  req: NextRequest,
   { params }: { params: { id: string } }
 ) => {
   try {
