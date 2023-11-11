@@ -15,13 +15,13 @@ interface Props {
 
 const Post: FC<Props> = ({ className, author, text, createdAt }) => {
   return (
-    <div className={cn('w-full flex items-start', className)}>
+    <div className={cn('flex', className)}>
       <Avatar className="mr-4">
         {author.avatar && <AvatarImage src={author.avatar} />}
         <AvatarFallback>{author.username[0].toUpperCase()}</AvatarFallback>
       </Avatar>
-      <div>
-        <div className="flex items-center justify-between leading-none mb-2">
+      <div className="w-full">
+        <div className="w-full flex items-center justify-between leading-none mb-2">
           <h5 className="font-medium text-lg">{author.username}</h5>
           <p className="text-sm text-muted-foreground">
             {createdAt.toLocaleString('ru-RU')}
