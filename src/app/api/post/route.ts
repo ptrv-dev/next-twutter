@@ -14,7 +14,11 @@ export const GET = async (req: NextRequest) => {
     const posts = await prisma.post.findMany({
       include: {
         author: { select: { id: true, username: true, avatar: true } },
-        comments: true,
+        comments: {
+          include: {
+            author: { select: { id: true, username: true, avatar: true } },
+          },
+        },
       },
       orderBy: { createdAt: 'desc' },
       skip,
