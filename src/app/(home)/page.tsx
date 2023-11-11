@@ -40,6 +40,7 @@ const HomePage = async () => {
                 author={post.author}
                 text={post.text}
                 likes={post.likes}
+                comments={post.comments}
                 createdAt={new Date(post.createdAt)}
               />
             ))}
