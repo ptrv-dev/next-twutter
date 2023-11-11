@@ -37,13 +37,19 @@ const PostCommentButton: FC<Props> = ({ postId, comments }) => {
             <h3 className="mb-4 font-bold text-2xl">Post comments</h3>
             <div className="flex flex-col gap-4">
               {comments.length === 0 && <p>There is no comments yet.</p>}
-              {comments.map((comment) => (
-                <Comment
-                  key={comment.id}
-                  {...comment}
-                  createdAt={new Date(comment.createdAt)}
-                />
-              ))}
+              {comments
+                .sort((c1, c2) => {
+                  const date1 = new Date(c1.createdAt);
+                  const date2 = new Date(c2.createdAt);
+                  return date2.getTime() - date1.getTime();
+                })
+                .map((comment) => (
+                  <Comment
+                    key={comment.id}
+                    {...comment}
+                    createdAt={new Date(comment.createdAt)}
+                  />
+                ))}
               {session.status === 'authenticated' && (
                 <WriteComment postId={postId} className="mt-8" />
               )}
