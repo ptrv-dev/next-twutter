@@ -3,6 +3,9 @@
 import { ChangeEvent, FC, useRef } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { cn } from '@/lib/utils';
+import axios from 'axios';
+import { toast } from './ui/use-toast';
+import { useRouter } from 'next/navigation';
 
 interface Props {
   className?: string;
@@ -12,13 +15,27 @@ interface Props {
 
 const ProfileAvatar: FC<Props> = ({ className, avatar, username }) => {
   const inputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
 
   const handleImage = async (e: ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || !e.target.files[0]) return;
     const file = e.target.files[0];
-    console.log(file);
     try {
-    } catch (error) {}
+      const data = new FormData();
+      data.append('file', file);
+
+      await axios.post('/api/profile/avatar', data);
+      toast({ title: 'Success', description: 'Avatar updated' });
+
+      router.refresh();
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: 'Error',
+        description: "Can't upload avatar, please try later..",
+        variant: 'destructive',
+      });
+    }
   };
 
   return (
@@ -59,7 +76,7 @@ const ProfileAvatar: FC<Props> = ({ className, avatar, username }) => {
         </svg>
       </button>
       <Avatar className="w-full h-full text-2xl">
-        {avatar && <AvatarImage />}
+        {avatar && <AvatarImage src={avatar} />}
         <AvatarFallback>{username[0].toUpperCase()}</AvatarFallback>
       </Avatar>
     </div>
