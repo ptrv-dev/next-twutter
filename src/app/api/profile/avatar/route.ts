@@ -4,6 +4,7 @@ import path from 'path';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../../auth/[...nextauth]/options';
 import { prisma } from '@/app/prisma';
+import sharp from 'sharp';
 
 const FORM_ITEM_NAME = 'file';
 const UPLOAD_PATH = path.join(process.cwd(), 'public/upload/avatar');
@@ -31,10 +32,9 @@ export async function POST(req: NextRequest) {
     const fileExtension = path.extname(file.name);
     const fileName = `${Date.now()}${fileExtension}`;
 
-    await fs.writeFile(
-      path.join(UPLOAD_PATH, fileName),
-      Buffer.from(fileArrayBuffer)
-    );
+    const compressed = await sharp(fileArrayBuffer)
+      .resize(256, 256)
+      .toFile(path.join(UPLOAD_PATH, fileName));
 
     const user = await prisma.user.findUnique({
       where: { id: session.user.id },
@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
         filename: fileName,
         url: `/upload/avatar/${fileName}`,
         originalname: file.name,
-        size: file.size,
+        size: compressed.size,
         mimetype: file.type,
       },
     });
