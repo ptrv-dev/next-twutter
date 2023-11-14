@@ -1,15 +1,14 @@
 'use client';
 
-import { IComment } from '@/app/api/post/interface';
 import { MessageCircleIcon } from 'lucide-react';
 import { FC, useState } from 'react';
-import Comment from './Comment';
+import Comment, { ICommentProps } from './Comment';
 import { useSession } from 'next-auth/react';
 import WriteComment from './WriteComment';
 
 interface Props {
   postId: number;
-  comments: IComment[];
+  comments: ICommentProps[];
 }
 
 const PostCommentButton: FC<Props> = ({ postId, comments }) => {

@@ -3,9 +3,9 @@ import { FC } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import PostLikeButton from './PostLikeButton';
 import PostCommentButton from './PostCommentButton';
-import { IComment } from '@/app/api/post/interface';
 import PostControl from './PostControl';
 import Link from 'next/link';
+import { ICommentProps } from './Comment';
 
 interface Props {
   className?: string;
@@ -17,7 +17,7 @@ interface Props {
   };
   text: string;
   likes: number[];
-  comments: IComment[];
+  comments: ICommentProps[];
   createdAt: Date;
   onRemove?: () => void;
 }

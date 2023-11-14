@@ -3,7 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import CommentLikeButton from './CommentLikeButton';
 import CommentControl from './CommentControl';
 
-interface Props {
+export interface ICommentProps {
   id: number;
   author: {
     id: number;
@@ -15,7 +15,7 @@ interface Props {
   createdAt: Date;
 }
 
-const Comment: FC<Props> = ({ id, text, author, likes, createdAt }) => {
+const Comment: FC<ICommentProps> = ({ id, text, author, likes, createdAt }) => {
   return (
     <div className="flex">
       <Avatar className="mr-4 flex-shrink-0">
