@@ -7,16 +7,18 @@ import { toast } from './ui/use-toast';
 import axios from 'axios';
 import { IGetPost } from '@/app/api/post/interface';
 import { cn } from '@/lib/utils';
+import { useRouter } from 'next/navigation';
 
 interface Props {
   id: number;
   likes: number[];
+  onLike?: () => void;
 }
 
-const PostLikeButton: FC<Props> = ({ id, likes }) => {
-  const [localLikes, setLocalLikes] = useState<number[]>(likes);
+const PostLikeButton: FC<Props> = ({ id, likes, onLike }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const session = useSession();
+  const router = useRouter();
 
   const handleLike = async () => {
     if (session.status === 'loading') return;
@@ -26,8 +28,9 @@ const PostLikeButton: FC<Props> = ({ id, likes }) => {
     setLoading(true);
 
     try {
-      const { data } = await axios.post<IGetPost>(`/api/post/like/${id}`);
-      setLocalLikes(data.data.likes);
+      await axios.post<IGetPost>(`/api/post/like/${id}`);
+      if (onLike) onLike();
+      else router.refresh();
     } catch (error) {
       console.error(error);
       toast({
@@ -51,11 +54,11 @@ const PostLikeButton: FC<Props> = ({ id, likes }) => {
         <>
           <HeartIcon
             className={cn({
-              'fill-primary': localLikes.includes(session.data?.user.id || -1),
+              'fill-primary': likes.includes(session.data?.user.id || -1),
             })}
             size={20}
           />
-          {localLikes.length}
+          {likes.length}
         </>
       )}
     </button>

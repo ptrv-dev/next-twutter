@@ -46,11 +46,9 @@ const InfinitePosts: FC<Props> = ({ limit }) => {
     }
   };
 
-  const onRemove = async () => {
+  const reloadPosts = async () => {
     await fetchPosts(posts.length, limit, true);
   };
-
-  console.log({ posts, times, hasMore });
 
   useEffect(() => {
     if (!observableRef.current) return;
@@ -81,7 +79,8 @@ const InfinitePosts: FC<Props> = ({ limit }) => {
           text={post.text}
           likes={post.likes}
           comments={post.comments}
-          onRemove={onRemove}
+          onRemove={reloadPosts}
+          onLike={reloadPosts}
           createdAt={new Date(post.createdAt)}
         />
       ))}

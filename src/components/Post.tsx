@@ -20,6 +20,7 @@ interface Props {
   comments: ICommentProps[];
   createdAt: Date;
   onRemove?: () => void;
+  onLike?: () => void;
 }
 
 const Post: FC<Props> = ({
@@ -31,6 +32,7 @@ const Post: FC<Props> = ({
   comments,
   createdAt,
   onRemove,
+  onLike,
 }) => {
   return (
     <div className={cn('flex', className)}>
@@ -51,7 +53,7 @@ const Post: FC<Props> = ({
         </div>
         <p className="whitespace-pre-wrap">{text}</p>
         <div className="mt-2 flex items-center gap-2">
-          <PostLikeButton id={id} likes={likes} />
+          <PostLikeButton id={id} likes={likes} onLike={onLike} />
           <PostCommentButton postId={id} comments={comments} />
           <PostControl postId={id} authorId={author.id} onRemove={onRemove} />
         </div>
