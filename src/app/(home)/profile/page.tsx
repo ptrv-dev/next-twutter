@@ -1,10 +1,18 @@
 import { authOptions } from '@/app/api/auth/[...nextauth]/options';
 import { prisma } from '@/app/prisma';
+import Post from '@/components/Post';
 import ProfileAvatar from '@/components/ProfileAvatar';
+import { Button } from '@/components/ui/button';
+import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
 import { getServerSession } from 'next-auth';
+import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
-const ProfilePage = async () => {
+const ProfilePage = async ({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string };
+}) => {
   const session = await getServerSession(authOptions);
   if (!session) return redirect('/auth/sign-in');
 
@@ -14,6 +22,21 @@ const ProfilePage = async () => {
   const postsCount = await prisma.post.count({ where: { authorId: user.id } });
   const commentsCount = await prisma.comment.count({
     where: { authorId: user.id },
+  });
+
+  const page = Number(searchParams.page) || 1;
+  const limit = 20;
+  const maxPage = Math.ceil(postsCount / limit);
+
+  const posts = await prisma.post.findMany({
+    where: { authorId: user.id },
+    include: {
+      author: { select: { id: true, avatar: true, username: true } },
+      comments: { include: { author: true } },
+    },
+    orderBy: { createdAt: 'desc' },
+    take: limit,
+    skip: (page - 1) * limit,
   });
 
   return (
@@ -52,6 +75,48 @@ const ProfilePage = async () => {
               </strong>
               <sub className="uppercase text-xs leading-none">comments</sub>
             </div>
+          </div>
+        </div>
+      </div>
+      <div className="p-4 border-t">
+        <h1 className="text-2xl mb-4">My Posts</h1>
+        <div className="flex flex-col gap-4">
+          {postsCount === 0 && <p>You haven&apos;t any posts yet</p>}
+          {posts.map((post) => (
+            <Post key={post.id} {...post} />
+          ))}
+          <div className="flex gap-2">
+            <Link href={page <= 1 ? '' : `/profile?page=${page - 1}`}>
+              <Button
+                className="w-8 h-8"
+                size="icon"
+                variant="secondary"
+                disabled={page <= 1}
+              >
+                <ChevronLeftIcon size={16} />
+              </Button>
+            </Link>
+            {[...Array(maxPage)].map((_, i) => (
+              <Link key={i} href={`/profile?page=${i + 1}`}>
+                <Button
+                  className="w-8 h-8 text-xs"
+                  size="icon"
+                  variant={page === i + 1 ? 'default' : 'secondary'}
+                >
+                  {i + 1}
+                </Button>
+              </Link>
+            ))}
+            <Link href={page >= maxPage ? '' : `/profile?page=${page + 1}`}>
+              <Button
+                className="w-8 h-8"
+                size="icon"
+                variant="secondary"
+                disabled={page >= maxPage}
+              >
+                <ChevronRightIcon size={16} />
+              </Button>
+            </Link>
           </div>
         </div>
       </div>
