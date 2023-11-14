@@ -5,6 +5,7 @@ import PostLikeButton from './PostLikeButton';
 import PostCommentButton from './PostCommentButton';
 import { IComment } from '@/app/api/post/interface';
 import PostControl from './PostControl';
+import Link from 'next/link';
 
 interface Props {
   className?: string;
@@ -33,13 +34,17 @@ const Post: FC<Props> = ({
 }) => {
   return (
     <div className={cn('flex', className)}>
-      <Avatar className="mr-4">
-        {author.avatar && <AvatarImage src={author.avatar} />}
-        <AvatarFallback>{author.username[0].toUpperCase()}</AvatarFallback>
-      </Avatar>
+      <Link href={`/user/${author.username}`}>
+        <Avatar className="mr-4">
+          {author.avatar && <AvatarImage src={author.avatar} />}
+          <AvatarFallback>{author.username[0].toUpperCase()}</AvatarFallback>
+        </Avatar>
+      </Link>
       <div className="w-full">
         <div className="w-full flex items-center justify-between leading-none mb-2">
-          <h5 className="font-medium text-lg">{author.username}</h5>
+          <Link href={`/user/${author.username}`}>
+            <h5 className="font-medium text-lg">{author.username}</h5>
+          </Link>
           <p className="text-sm text-muted-foreground">
             {createdAt.toLocaleString('ru-RU')}
           </p>

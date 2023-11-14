@@ -19,7 +19,7 @@ const ProfilePage = async () => {
   return (
     <div className="border-r h-full">
       <div className="border-b p-4">
-        <h1 className="text-2xl">Profile</h1>
+        <h1 className="text-2xl">My Profile</h1>
       </div>
       <div className="p-4 flex">
         <ProfileAvatar

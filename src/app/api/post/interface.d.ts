@@ -30,11 +30,11 @@ export interface IAuthor {
 
 export interface IComment {
   id: number;
-  post: IPost;
+  // post: IPost;
   postId: number;
-  author: IAuthor;
+  // author: IAuthor;
   authorId: number;
   likes: number[];
   text: string;
-  createdAt: string;
+  createdAt: Date;
 }
