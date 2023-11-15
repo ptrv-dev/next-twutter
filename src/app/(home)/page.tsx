@@ -1,13 +1,9 @@
-import { getServerSession } from 'next-auth';
-
-import WritePost from '@/components/WritePost';
-import { authOptions } from '../api/auth/[...nextauth]/options';
-import Post from '@/components/Post';
-import InfinitePosts from '@/components/InfinitePosts';
-import { prisma } from '../prisma';
+import { prisma } from '@/app/prisma';
+import { InfinitePosts, Post, WritePost } from '@/components';
+import { getSession } from '@/utils/getSession';
 
 const HomePage = async () => {
-  const session = await getServerSession(authOptions);
+  const session = await getSession();
   const limit = 10;
   const posts = await prisma.post.findMany({
     include: {
