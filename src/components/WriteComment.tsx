@@ -1,19 +1,27 @@
+'use client';
+
 import { FC, useState } from 'react';
-import { Form, FormField, FormItem, FormMessage } from './ui/form';
-import { cn } from '@/lib/utils';
-import { ImageIcon, VideoIcon } from 'lucide-react';
-import { Button } from './ui/button';
-import { Textarea } from './ui/textarea';
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { toast } from './ui/use-toast';
 import axios from 'axios';
-import { useRouter } from 'next/navigation';
+
+import {
+  Button,
+  Form,
+  FormField,
+  FormItem,
+  FormMessage,
+  Textarea,
+  toast,
+} from './ui';
+import { cn } from '@/lib/utils';
 
 interface Props {
   className?: string;
   postId: number;
+  onCreate?: () => void;
 }
 
 const formSchema = z.object({
@@ -24,7 +32,7 @@ const formSchema = z.object({
 });
 type FormSchemaType = z.infer<typeof formSchema>;
 
-const WriteComment: FC<Props> = ({ postId, className }) => {
+const WriteComment: FC<Props> = ({ postId, className, onCreate }) => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const form = useForm<FormSchemaType>({
@@ -33,7 +41,6 @@ const WriteComment: FC<Props> = ({ postId, className }) => {
   });
 
   const onSubmit = async (data: FormSchemaType) => {
-    console.log(data);
     try {
       setLoading(true);
 
@@ -41,7 +48,8 @@ const WriteComment: FC<Props> = ({ postId, className }) => {
 
       toast({ title: 'Comment created' });
       form.reset();
-      router.refresh();
+      if (onCreate) onCreate();
+      else router.refresh();
     } catch (error) {
       toast({
         title: 'Error',
