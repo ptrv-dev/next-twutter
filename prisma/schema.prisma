@@ -22,6 +22,7 @@ model User {
 
 model Post {
   id        Int       @id @default(autoincrement())
+  image     String?
   author    User      @relation(fields: [authorId], references: [id])
   authorId  Int
   text      String
