@@ -9,9 +9,10 @@ import WriteComment from './WriteComment';
 interface Props {
   postId: number;
   comments: ICommentProps[];
+  onComment?: () => void;
 }
 
-const PostCommentButton: FC<Props> = ({ postId, comments }) => {
+const PostCommentButton: FC<Props> = ({ postId, comments, onComment }) => {
   const [open, setOpen] = useState<boolean>(false);
   const session = useSession();
 
@@ -50,7 +51,11 @@ const PostCommentButton: FC<Props> = ({ postId, comments }) => {
                   />
                 ))}
               {session.status === 'authenticated' && (
-                <WriteComment postId={postId} className="mt-8" />
+                <WriteComment
+                  onCreate={onComment}
+                  postId={postId}
+                  className="mt-8"
+                />
               )}
             </div>
           </div>

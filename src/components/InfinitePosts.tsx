@@ -77,6 +77,7 @@ const InfinitePosts: FC<Props> = ({ limit }) => {
           {...post}
           onRemove={reloadPosts}
           onLike={reloadPosts}
+          onComment={reloadPosts}
           createdAt={new Date(post.createdAt)}
         />
       ))}
