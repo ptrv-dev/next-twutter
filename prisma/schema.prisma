@@ -8,14 +8,16 @@ datasource db {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  avatar    String?
-  username  String    @unique
-  email     String    @unique
-  password  String
-  posts     Post[]
-  comments  Comment[]
-  createdAt DateTime  @default(now())
+  id         Int       @id @default(autoincrement())
+  avatar     String?
+  username   String    @unique
+  email      String    @unique
+  password   String
+  posts      Post[]
+  comments   Comment[]
+  followedBy User[]    @relation("UserFollows")
+  following  User[]    @relation("UserFollows")
+  createdAt  DateTime  @default(now())
 }
 
 model Post {
