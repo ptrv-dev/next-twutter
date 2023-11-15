@@ -3,6 +3,7 @@ import { prisma } from '@/app/prisma';
 import Post from '@/components/Post';
 import UserFollowButton from '@/components/UserFollowButton';
 import UserFollowers from '@/components/UserFollowers';
+import UserFollowing from '@/components/UserFollowing';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
@@ -81,12 +82,7 @@ const UserPage = async ({
           </div>
           <div className="w-full max-w-sm grid grid-cols-3 gap-4 mb-4">
             <UserFollowers followers={user.followedBy} />
-            <div className="px-8 p-4 rounded-lg bg-primary-foreground flex flex-col items-center text-center">
-              <strong className="text-4xl font-medium leading-none text-primary">
-                {user.following.length}
-              </strong>
-              <sub className="uppercase text-xs leading-none">following</sub>
-            </div>
+            <UserFollowing following={user.following} />
             <div className="px-8 p-4 rounded-lg bg-primary-foreground flex flex-col items-center text-center">
               <strong className="text-4xl font-medium leading-none text-primary">
                 {postsCount}
