@@ -1,7 +1,6 @@
 'use client';
 
 import { FC, useState } from 'react';
-import { ImageIcon, VideoIcon } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
@@ -13,6 +12,7 @@ import { Form, FormField, FormItem, FormMessage } from './ui/form';
 import { toast } from './ui/use-toast';
 import { cn } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
+import PostImageButton from './PostImageButton';
 
 const formSchema = z.object({
   text: z
@@ -33,16 +33,18 @@ const WritePost: FC<Props> = ({ className }) => {
   });
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [image, setImage] = useState<File | undefined>();
 
   const onSubmit = async (data: FormSchemaType) => {
     if (loading) return;
     try {
       setLoading(true);
-      await axios.post(
-        '/api/post',
-        { text: data.text },
-        { withCredentials: true }
-      );
+
+      const formData = new FormData();
+      formData.append('text', data.text);
+      if (image) formData.append('image', image);
+
+      await axios.post('/api/post', formData, { withCredentials: true });
       toast({
         title: 'Post created',
       });
@@ -78,27 +80,11 @@ const WritePost: FC<Props> = ({ className }) => {
             </FormItem>
           )}
         />
-        <div className="w-full mt-2 flex justify-between">
-          <div className="flex gap-2">
-            <Button
-              type="button"
-              size="icon"
-              className="w-8 h-8"
-              variant="link"
-              disabled={loading}
-            >
-              <ImageIcon size={20} />
-            </Button>
-            <Button
-              type="button"
-              size="icon"
-              className="w-8 h-8"
-              variant="link"
-              disabled={loading}
-            >
-              <VideoIcon size={20} />
-            </Button>
-          </div>
+        <div className="w-full mt-2 gap-4 flex justify-between">
+          <PostImageButton
+            image={image}
+            onImageChange={(image) => setImage(image)}
+          />
           <Button type="submit" className="flex" disabled={loading}>
             Post
           </Button>
