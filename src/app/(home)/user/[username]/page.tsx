@@ -1,15 +1,16 @@
-import { authOptions } from '@/app/api/auth/[...nextauth]/options';
-import { prisma } from '@/app/prisma';
-import Post from '@/components/Post';
-import UserFollowButton from '@/components/UserFollowButton';
-import UserFollowers from '@/components/UserFollowers';
-import UserFollowing from '@/components/UserFollowing';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
-import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
-import { getServerSession } from 'next-auth';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
+import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
+
+import { prisma } from '@/app/prisma';
+import {
+  UserFollowing,
+  UserFollowButton,
+  Post,
+  UserFollowers,
+} from '@/components';
+import { Avatar, AvatarFallback, AvatarImage, Button } from '@/components/ui';
+import { getSession } from '@/utils/getSession';
 
 const UserPage = async ({
   searchParams,
@@ -18,7 +19,7 @@ const UserPage = async ({
   searchParams: { [key: string]: string };
   params: { username: string };
 }) => {
-  const session = await getServerSession(authOptions);
+  const session = await getSession();
 
   const user = await prisma.user.findUnique({
     where: { username: params.username },
@@ -40,9 +41,6 @@ const UserPage = async ({
   if (session && session.user.id === user.id) return redirect('/profile');
 
   const postsCount = await prisma.post.count({ where: { authorId: user.id } });
-  const commentsCount = await prisma.comment.count({
-    where: { authorId: user.id },
-  });
 
   const page = Number(searchParams.page) || 1;
   const limit = 20;
