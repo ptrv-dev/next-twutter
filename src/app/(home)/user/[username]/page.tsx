@@ -1,6 +1,7 @@
 import { authOptions } from '@/app/api/auth/[...nextauth]/options';
 import { prisma } from '@/app/prisma';
 import Post from '@/components/Post';
+import UserFollowButton from '@/components/UserFollowButton';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
@@ -19,6 +20,7 @@ const UserPage = async ({
 
   const user = await prisma.user.findUnique({
     where: { username: params.username },
+    include: { followedBy: true, following: true },
   });
 
   if (!user)
@@ -76,20 +78,31 @@ const UserPage = async ({
               <p className="text-primary text-right">{user.username}</p>
             </div>
           </div>
-          <div className="w-full max-w-sm grid grid-cols-2 gap-4">
+          <div className="w-full max-w-sm grid grid-cols-3 gap-4 mb-4">
+            <div className="px-8 p-4 rounded-lg bg-primary-foreground flex flex-col items-center text-center">
+              <strong className="text-4xl font-medium leading-none text-primary">
+                {user.followedBy.length}
+              </strong>
+              <sub className="uppercase text-xs leading-none">followers</sub>
+            </div>
+            <div className="px-8 p-4 rounded-lg bg-primary-foreground flex flex-col items-center text-center">
+              <strong className="text-4xl font-medium leading-none text-primary">
+                {user.following.length}
+              </strong>
+              <sub className="uppercase text-xs leading-none">following</sub>
+            </div>
             <div className="px-8 p-4 rounded-lg bg-primary-foreground flex flex-col items-center text-center">
               <strong className="text-4xl font-medium leading-none text-primary">
                 {postsCount}
               </strong>
               <sub className="uppercase text-xs leading-none">posts</sub>
             </div>
-            <div className="px-8 p-4 rounded-lg bg-primary-foreground flex flex-col items-center text-center">
-              <strong className="text-4xl font-medium leading-none text-primary">
-                {commentsCount}
-              </strong>
-              <sub className="uppercase text-xs leading-none">comments</sub>
-            </div>
           </div>
+          {session && (
+            <div className="flex">
+              <UserFollowButton session={session} user={user} />
+            </div>
+          )}
         </div>
       </div>
       <div className="p-4 border-t">
