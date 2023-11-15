@@ -3,26 +3,22 @@ import { getServerSession } from 'next-auth';
 import WritePost from '@/components/WritePost';
 import { authOptions } from '../api/auth/[...nextauth]/options';
 import Post from '@/components/Post';
-import axios from 'axios';
-import { type IGetPosts } from '../api/post/interface';
 import InfinitePosts from '@/components/InfinitePosts';
-
-async function getPosts(limit: number) {
-  try {
-    const { data } = await axios.get<IGetPosts>(
-      'http://localhost:3000/api/post?limit=' + limit
-    );
-    return data.data;
-  } catch (error) {
-    console.log(error);
-    return null;
-  }
-}
+import { prisma } from '../prisma';
 
 const HomePage = async () => {
-  const limit = 10;
   const session = await getServerSession(authOptions);
-  const posts = await getPosts(limit);
+  const limit = 10;
+  const posts = await prisma.post.findMany({
+    include: {
+      author: true,
+      comments: {
+        include: { author: true },
+      },
+    },
+    take: limit,
+    orderBy: { createdAt: 'desc' },
+  });
   return (
     <div className="border-r h-full">
       <div className="border-b p-4">
@@ -30,21 +26,15 @@ const HomePage = async () => {
       </div>
       {session && <WritePost className="p-4 border-b" />}
       <div className="flex flex-col">
-        {posts ? (
-          <>
-            {posts.map((post) => (
-              <Post
-                className="border-b p-4"
-                key={post.id}
-                {...post}
-                createdAt={new Date(post.createdAt)}
-              />
-            ))}
-            <InfinitePosts limit={limit} />
-          </>
-        ) : (
-          'Something went wrong...'
-        )}
+        {posts.map((post) => (
+          <Post
+            className="border-b p-4"
+            key={post.id}
+            {...post}
+            createdAt={new Date(post.createdAt)}
+          />
+        ))}
+        <InfinitePosts limit={limit} />
       </div>
     </div>
   );
