@@ -74,11 +74,7 @@ const InfinitePosts: FC<Props> = ({ limit }) => {
         <Post
           className="p-4 border-b"
           key={post.id}
-          id={post.id}
-          author={post.author}
-          text={post.text}
-          likes={post.likes}
-          comments={post.comments}
+          {...post}
           onRemove={reloadPosts}
           onLike={reloadPosts}
           createdAt={new Date(post.createdAt)}

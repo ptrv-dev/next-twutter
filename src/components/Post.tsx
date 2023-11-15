@@ -6,10 +6,12 @@ import PostCommentButton from './PostCommentButton';
 import PostControl from './PostControl';
 import Link from 'next/link';
 import { ICommentProps } from './Comment';
+import Image from 'next/image';
 
 interface Props {
   className?: string;
   id: number;
+  image: string | null;
   author: {
     id: number;
     username: string;
@@ -26,6 +28,7 @@ interface Props {
 const Post: FC<Props> = ({
   className,
   id,
+  image,
   author,
   text,
   likes,
@@ -52,6 +55,11 @@ const Post: FC<Props> = ({
           </p>
         </div>
         <p className="whitespace-pre-wrap">{text}</p>
+        {image && (
+          <div className="mt-2 relative rounded-md overflow-hidden w-full h-96">
+            <Image className="object-cover" src={image} alt="" fill />
+          </div>
+        )}
         <div className="mt-2 flex items-center gap-2">
           <PostLikeButton id={id} likes={likes} onLike={onLike} />
           <PostCommentButton postId={id} comments={comments} />
