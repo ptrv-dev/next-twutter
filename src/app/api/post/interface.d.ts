@@ -14,6 +14,7 @@ export interface IGetPost {
 
 export interface IPost {
   id: number;
+  image: string | null;
   authorId: number;
   text: string;
   likes: number[];

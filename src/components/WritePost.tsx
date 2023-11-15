@@ -49,6 +49,7 @@ const WritePost: FC<Props> = ({ className }) => {
         title: 'Post created',
       });
       form.reset();
+      setImage(undefined);
       router.refresh();
     } catch (error) {
       console.error(error);
