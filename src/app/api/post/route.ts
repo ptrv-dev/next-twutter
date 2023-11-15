@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { NextRequest, NextResponse } from 'next/server';
 import * as z from 'zod';
 import { authOptions } from '../auth/[...nextauth]/options';
+import { saveFile } from '@/utils/saveFile';
 
 export const GET = async (req: NextRequest) => {
   try {
@@ -63,12 +64,19 @@ export const POST = async (req: NextRequest, res: Response) => {
         { status: 401 }
       );
 
-    const json = await req.json();
-    postCreateSchema.parse(json);
+    const formData = await req.formData();
+    const formDataObject = Object.fromEntries(formData.entries());
+    postCreateSchema.parse(formDataObject);
+
+    const text = formData.get('text') as string;
+    const image = formData.get('image') as File | undefined;
+    let uploadedImage = image ? await saveFile(image) : undefined;
+    const imageUrl = uploadedImage ? uploadedImage.url : undefined;
 
     const post = await prisma.post.create({
       data: {
-        text: json.text,
+        image: imageUrl || null,
+        text,
         author: { connect: { id: session.user.id } },
       },
     });
