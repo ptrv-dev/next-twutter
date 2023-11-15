@@ -100,51 +100,55 @@ const UserPage = async ({
       <div className="p-4 border-t">
         <h1 className="text-2xl mb-4">Posts</h1>
         <div className="flex flex-col gap-4">
-          {postsCount === 0 && <p>User haven&apos;t any posts yet</p>}
+          {postsCount === 0 && <p>User don&apos;t any posts yet</p>}
           {posts.map((post) => (
             <Post key={post.id} {...post} />
           ))}
-          <div className="flex gap-2">
-            <Link
-              href={page <= 1 ? '#' : `/user/${user.username}?page=${page - 1}`}
-            >
-              <Button
-                className="w-8 h-8"
-                size="icon"
-                variant="secondary"
-                disabled={page <= 1}
+          {postsCount > limit && (
+            <div className="flex gap-2">
+              <Link
+                href={
+                  page <= 1 ? '#' : `/user/${user.username}?page=${page - 1}`
+                }
               >
-                <ChevronLeftIcon size={16} />
-              </Button>
-            </Link>
-            {[...Array(maxPage)].map((_, i) => (
-              <Link key={i} href={`/user/${user.username}?page=${i + 1}`}>
                 <Button
-                  className="w-8 h-8 text-xs"
+                  className="w-8 h-8"
                   size="icon"
-                  variant={page === i + 1 ? 'default' : 'secondary'}
+                  variant="secondary"
+                  disabled={page <= 1}
                 >
-                  {i + 1}
+                  <ChevronLeftIcon size={16} />
                 </Button>
               </Link>
-            ))}
-            <Link
-              href={
-                page >= maxPage
-                  ? '#'
-                  : `/user/${user.username}?page=${page + 1}`
-              }
-            >
-              <Button
-                className="w-8 h-8"
-                size="icon"
-                variant="secondary"
-                disabled={page >= maxPage}
+              {[...Array(maxPage)].map((_, i) => (
+                <Link key={i} href={`/user/${user.username}?page=${i + 1}`}>
+                  <Button
+                    className="w-8 h-8 text-xs"
+                    size="icon"
+                    variant={page === i + 1 ? 'default' : 'secondary'}
+                  >
+                    {i + 1}
+                  </Button>
+                </Link>
+              ))}
+              <Link
+                href={
+                  page >= maxPage
+                    ? '#'
+                    : `/user/${user.username}?page=${page + 1}`
+                }
               >
-                <ChevronRightIcon size={16} />
-              </Button>
-            </Link>
-          </div>
+                <Button
+                  className="w-8 h-8"
+                  size="icon"
+                  variant="secondary"
+                  disabled={page >= maxPage}
+                >
+                  <ChevronRightIcon size={16} />
+                </Button>
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </div>
