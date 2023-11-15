@@ -3,15 +3,10 @@ import fs from 'fs/promises';
 
 type Options = {
   fileName?: string;
-  uploadPath?: string;
 };
 
-export const saveFile = async (
-  file: File,
-  options?: Options
-): Promise<boolean> => {
-  const uploadPath =
-    options?.uploadPath || path.join(process.cwd(), 'public/upload');
+export const saveFile = async (file: File, options?: Options) => {
+  const uploadPath = path.join(process.cwd(), 'public/upload');
   const fileName = options?.fileName || Date.now();
 
   try {
@@ -23,7 +18,13 @@ export const saveFile = async (
       Buffer.from(fileArrayBuffer)
     );
 
-    return true;
+    return {
+      fileName: `${fileName}${fileExtension}`,
+      url: `/upload/${fileName}${fileExtension}`,
+      originalname: file.name,
+      size: file.size,
+      mimetype: file.type,
+    };
   } catch (error) {
     console.log(
       `[${new Date().toLocaleString()}][ERROR] Save file error\n`,
