@@ -2,6 +2,8 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/options';
 import { prisma } from '@/app/prisma';
 import Post from '@/components/Post';
 import ProfileAvatar from '@/components/ProfileAvatar';
+import UserFollowers from '@/components/UserFollowers';
+import UserFollowing from '@/components/UserFollowing';
 import { Button } from '@/components/ui/button';
 import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
 import { getServerSession } from 'next-auth';
@@ -16,13 +18,13 @@ const ProfilePage = async ({
   const session = await getServerSession(authOptions);
   if (!session) return redirect('/auth/sign-in');
 
-  const user = await prisma.user.findUnique({ where: { id: session.user.id } });
+  const user = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    include: { following: true, followedBy: true },
+  });
   if (!user) return redirect('/auth/sign-in');
 
   const postsCount = await prisma.post.count({ where: { authorId: user.id } });
-  const commentsCount = await prisma.comment.count({
-    where: { authorId: user.id },
-  });
 
   const page = Number(searchParams.page) || 1;
   const limit = 20;
@@ -62,18 +64,14 @@ const ProfilePage = async ({
               <p className="text-primary text-right">{user.email}</p>
             </div>
           </div>
-          <div className="w-full max-w-sm grid grid-cols-2 gap-4">
+          <div className="w-full max-w-sm grid grid-cols-3 gap-4">
+            <UserFollowers followers={user.followedBy} />
+            <UserFollowing following={user.following} />
             <div className="px-8 p-4 rounded-lg bg-primary-foreground flex flex-col items-center text-center">
               <strong className="text-4xl font-medium leading-none text-primary">
                 {postsCount}
               </strong>
               <sub className="uppercase text-xs leading-none">posts</sub>
-            </div>
-            <div className="px-8 p-4 rounded-lg bg-primary-foreground flex flex-col items-center text-center">
-              <strong className="text-4xl font-medium leading-none text-primary">
-                {commentsCount}
-              </strong>
-              <sub className="uppercase text-xs leading-none">comments</sub>
             </div>
           </div>
         </div>
@@ -81,43 +79,45 @@ const ProfilePage = async ({
       <div className="p-4 border-t">
         <h1 className="text-2xl mb-4">My Posts</h1>
         <div className="flex flex-col gap-4">
-          {postsCount === 0 && <p>You haven&apos;t any posts yet</p>}
+          {postsCount === 0 && <p>You don&apos;t have any posts yet</p>}
           {posts.map((post) => (
             <Post key={post.id} {...post} />
           ))}
-          <div className="flex gap-2">
-            <Link href={page <= 1 ? '' : `/profile?page=${page - 1}`}>
-              <Button
-                className="w-8 h-8"
-                size="icon"
-                variant="secondary"
-                disabled={page <= 1}
-              >
-                <ChevronLeftIcon size={16} />
-              </Button>
-            </Link>
-            {[...Array(maxPage)].map((_, i) => (
-              <Link key={i} href={`/profile?page=${i + 1}`}>
+          {postsCount > limit && (
+            <div className="flex gap-2">
+              <Link href={page <= 1 ? '' : `/profile?page=${page - 1}`}>
                 <Button
-                  className="w-8 h-8 text-xs"
+                  className="w-8 h-8"
                   size="icon"
-                  variant={page === i + 1 ? 'default' : 'secondary'}
+                  variant="secondary"
+                  disabled={page <= 1}
                 >
-                  {i + 1}
+                  <ChevronLeftIcon size={16} />
                 </Button>
               </Link>
-            ))}
-            <Link href={page >= maxPage ? '' : `/profile?page=${page + 1}`}>
-              <Button
-                className="w-8 h-8"
-                size="icon"
-                variant="secondary"
-                disabled={page >= maxPage}
-              >
-                <ChevronRightIcon size={16} />
-              </Button>
-            </Link>
-          </div>
+              {[...Array(maxPage)].map((_, i) => (
+                <Link key={i} href={`/profile?page=${i + 1}`}>
+                  <Button
+                    className="w-8 h-8 text-xs"
+                    size="icon"
+                    variant={page === i + 1 ? 'default' : 'secondary'}
+                  >
+                    {i + 1}
+                  </Button>
+                </Link>
+              ))}
+              <Link href={page >= maxPage ? '' : `/profile?page=${page + 1}`}>
+                <Button
+                  className="w-8 h-8"
+                  size="icon"
+                  variant="secondary"
+                  disabled={page >= maxPage}
+                >
+                  <ChevronRightIcon size={16} />
+                </Button>
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </div>
