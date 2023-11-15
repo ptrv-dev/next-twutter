@@ -17,6 +17,7 @@ import UserFollowing from './UserFollowing';
 import UsersListModal from './UsersListModal';
 import WriteComment from './WriteComment';
 import WritePost from './WritePost';
+import UserFollowers from './UserFollowers';
 
 export {
   AuthProvider,
@@ -38,4 +39,5 @@ export {
   UsersListModal,
   WriteComment,
   WritePost,
+  UserFollowers
 };
