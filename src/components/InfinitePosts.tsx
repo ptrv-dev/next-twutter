@@ -2,6 +2,8 @@
 
 interface Props {
   limit: number;
+  orderBy?: string;
+  sortBy?: string;
 }
 
 import { IGetPosts, IPost } from '@/app/api/post/interface';
@@ -11,7 +13,7 @@ import axios from 'axios';
 import Post from './Post';
 import { Loader2Icon } from 'lucide-react';
 
-const InfinitePosts: FC<Props> = ({ limit }) => {
+const InfinitePosts: FC<Props> = ({ limit, orderBy, sortBy }) => {
   const [posts, setPosts] = useState<IPost[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [times, setTimes] = useState<number>(1);
@@ -22,9 +24,14 @@ const InfinitePosts: FC<Props> = ({ limit }) => {
     if (loading) return;
     try {
       setLoading(true);
+      const searchParams = new URLSearchParams();
+      if (orderBy) searchParams.set('orderBy', orderBy);
+      if (sortBy) searchParams.set('sortBy', sortBy);
+      searchParams.set('skip', skip.toString());
+      searchParams.set('limit', limit.toString());
 
       const { data } = await axios.get<IGetPosts>(
-        '/api/post?skip=' + skip + '&limit=' + limit
+        '/api/post?' + searchParams.toString()
       );
 
       if (clear) {
