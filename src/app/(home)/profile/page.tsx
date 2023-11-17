@@ -9,7 +9,7 @@ import {
   UserFollowers,
   UserFollowing,
 } from '@/components';
-import { Button } from '@/components/ui';
+import { Button } from '@/components/ui/button';
 import { getSession } from '@/utils/getSession';
 
 const ProfilePage = async ({
