@@ -21,14 +21,16 @@ model User {
 }
 
 model Post {
-  id        Int       @id @default(autoincrement())
-  image     String?
-  author    User      @relation(fields: [authorId], references: [id])
-  authorId  Int
-  text      String
-  likes     Int[]     @default([])
-  createdAt DateTime  @default(now())
-  comments  Comment[]
+  id            Int       @id @default(autoincrement())
+  image         String?
+  author        User      @relation(fields: [authorId], references: [id])
+  authorId      Int
+  text          String
+  likes         Int[]     @default([])
+  likesCount    Int       @default(0)
+  comments      Comment[]
+  commentsCount Int       @default(0)
+  createdAt     DateTime  @default(now())
 }
 
 model Comment {
