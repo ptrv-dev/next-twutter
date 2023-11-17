@@ -25,15 +25,18 @@ export const POST = async (
       );
 
     let likes = post.likes;
+    let likesCount = post.likesCount;
     if (likes.includes(session.user.id)) {
       likes = likes.filter((like) => like !== session.user.id);
+      likesCount--;
     } else {
       likes.push(session.user.id);
+      likesCount++;
     }
 
     const updatedPost = await prisma.post.update({
       where: { id: Number(id) },
-      data: { likes },
+      data: { likes, likesCount },
     });
 
     return NextResponse.json(
