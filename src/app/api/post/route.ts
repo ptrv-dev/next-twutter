@@ -10,6 +10,8 @@ export const GET = async (req: NextRequest) => {
     const query = new URL(req.url).searchParams;
     const skip = Number(query.get('skip')) || 0;
     const limit = Number(query.get('limit')) || 10;
+    const orderBy = query.get('orderBy') || 'createdAt';
+    const sortBy = query.get('sortBy')?.toLowerCase() || 'desc';
 
     const count = await prisma.post.count();
     const posts = await prisma.post.findMany({
@@ -21,7 +23,7 @@ export const GET = async (req: NextRequest) => {
           },
         },
       },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { [orderBy]: sortBy },
       skip,
       take: limit,
     });
