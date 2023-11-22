@@ -11,7 +11,6 @@ import {
 import debounce from '@/utils/debounce';
 import Link from 'next/link';
 import { Post } from '.';
-import { useSearchParams } from 'next/navigation';
 
 const Search = () => {
   const [query, setQuery] = useState('');

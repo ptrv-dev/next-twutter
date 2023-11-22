@@ -1,5 +1,4 @@
 import Search from '@/components/Search';
-import { Input } from '@/components/ui';
 import { getSession } from '@/utils/getSession';
 import { redirect } from 'next/navigation';
 
