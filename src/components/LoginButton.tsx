@@ -1,10 +1,11 @@
 'use client';
 
-import { cn } from '@/lib/utils';
-import { LogInIcon, LogOutIcon } from 'lucide-react';
-import { useSession } from 'next-auth/react';
-import Link from 'next/link';
 import { FC } from 'react';
+import Link from 'next/link';
+import { signOut, useSession } from 'next-auth/react';
+import { LogInIcon, LogOutIcon } from 'lucide-react';
+
+import { cn } from '@/lib/utils';
 
 interface Props {
   className?: string;
@@ -17,8 +18,8 @@ const LoginButton: FC<Props> = ({ className }) => {
 
   if (session.status === 'authenticated')
     return (
-      <Link
-        href="/auth/sign-out"
+      <button
+        onClick={() => signOut()}
         className={cn(
           'flex items-center py-2 gap-4 text-xl transition-colors hover:text-primary',
           className
@@ -26,7 +27,7 @@ const LoginButton: FC<Props> = ({ className }) => {
       >
         <LogOutIcon size={18} />
         Sign Out
-      </Link>
+      </button>
     );
 
   return (

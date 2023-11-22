@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { HomeIcon, SearchIcon, StarsIcon, UserIcon } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
+import LoginButton from './LoginButton';
 
 interface Props {
   className?: string;
@@ -31,7 +32,7 @@ const navigationItems = [
   },
 ];
 
-const Navbar: FC<Props> = ({ className }) => {
+const Navbar: FC<Props> = async ({ className }) => {
   return (
     <aside className={cn('flex flex-col py-4 border-r', className)}>
       <Link
@@ -51,6 +52,7 @@ const Navbar: FC<Props> = ({ className }) => {
             {item.label}
           </Link>
         ))}
+        <LoginButton />
       </nav>
     </aside>
   );
