@@ -9,7 +9,9 @@ import {
   Post,
   UserFollowers,
 } from '@/components';
-import { Avatar, AvatarFallback, AvatarImage, Button } from '@/components/ui';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+
 import { getSession } from '@/utils/getSession';
 
 const UserPage = async ({
