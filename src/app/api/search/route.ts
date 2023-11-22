@@ -36,6 +36,7 @@ export interface SearchResponse {
     posts: Post[];
     usersCount: number;
     postsCount: number;
+    totalCount: number;
   };
 }
 
@@ -73,7 +74,7 @@ export const GET = async (req: NextRequest) => {
     const users = await prisma.user.findMany({
       where: { username: { contains: query } },
       select: { id: true, username: true, avatar: true },
-      take: limit,
+      take: limit / 2,
       skip: limit * (page - 1),
     });
     const posts = await prisma.post.findMany({
@@ -98,7 +99,7 @@ export const GET = async (req: NextRequest) => {
           },
         },
       },
-      take: limit,
+      take: limit / 2,
       skip: limit * (page - 1),
     });
 
@@ -111,6 +112,7 @@ export const GET = async (req: NextRequest) => {
         posts,
         usersCount,
         postsCount,
+        totalCount: usersCount + postsCount,
       },
     });
   } catch (error) {
